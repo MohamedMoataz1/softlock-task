@@ -25,10 +25,15 @@
 To run SoftLock Task locally, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/yourusername/softlock-task.git`
-2. Navigate to the project directory: `cd softlock-task`
+2. Navigate to the project directory
 3. Install Composer dependencies: `composer install`
-4. Copy the `.env.example` file to `.env` and configure your environment variables, including encryption keys.
+4. Copy the `.env.example` file to `.env` :  `cp .env.example .env`
 5. Generate Laravel application key: `php artisan key:generate`
+6. Configure your environment variables, including custom encryption keys. Open the .env file in your preferred text editor and add the following custom variables:
+# Custom values
+KEY="321320"
+IV="5252525252552525"
+CIPHER="aes-256-cbc"
 6. Start the development server: `php artisan serve`
 7. Open your web browser and navigate to `http://localhost:8000/`
 
