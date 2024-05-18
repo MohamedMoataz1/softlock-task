@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Storage;
 
 class UploadFileController extends Controller
 {
-    private $key ;
-    private $iv ;
-    private $cipher ;
+    private $key;
+    private $iv;
+    private $cipher;
 
     public function __construct()
     {
@@ -51,8 +51,5 @@ class UploadFileController extends Controller
             });
             return $download;
         }
-    }
-    private function operate($operation){
-        
     }
 }
