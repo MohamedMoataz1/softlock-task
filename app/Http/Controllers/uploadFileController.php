@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class uploadFileController extends Controller
+class UploadFileController extends Controller
 {
-    private $key = "";
-    private $iv = "";
-    private $cipher = "";
+    private $key ;
+    private $iv ;
+    private $cipher ;
 
     public function __construct()
     {
-        $this->key = env("KEY");
-        $this->iv = env("IV");
-        $this->cipher = env("CIPHER");
+        $this->key = config('app.key');
+        $this->iv = config('app.iv');
+        $this->cipher = config('app.cipher');
     }
 
     function upload()
@@ -27,14 +27,14 @@ class uploadFileController extends Controller
         $file =  $request->file('file');
         $fileName = $file->getClientOriginalName();
         $contents = file_get_contents($file);
-        return $this->operation($request->opType, $contents, $fileName);
+        return $this->handleOperation($request->opType, $contents, $fileName);
     }
-    function operation($operation, $contents, $fileName)
+    private function handleOperation($operation, $contents, $fileName)
     {
         $key = $this->key;
         $iv = $this->iv;
         $cipher = $this->cipher;
-        if ($operation == "encrypt") {
+        if ($operation === "encrypt") {
             $encryptedContent = openssl_encrypt($contents, $cipher, $key,  0, $iv);
             Storage::put('public/encrypted_files/' . $fileName, $encryptedContent);
             $download =  Storage::download('public/encrypted_files/' . $fileName);
@@ -42,14 +42,17 @@ class uploadFileController extends Controller
                 storage::delete('public/encrypted_files/' . $fileName);
             });
             return $download;
-        } else if ($operation == "decrypt") {
+        } else if ($operation === "decrypt") {
             $decryptedContent = openssl_decrypt($contents, $cipher, $key,  0, $iv);
             Storage::put('public/decrypted_files/' . $fileName, $decryptedContent);
             $download =  Storage::download('public/decrypted_files/' . $fileName);
             app()->terminating(function () use ($fileName) {
-                storage::delete('public/decrypted_files/' . $fileName);
+                Storage::delete('public/decrypted_files/' . $fileName);
             });
             return $download;
         }
+    }
+    private function operate($operation){
+        
     }
 }
